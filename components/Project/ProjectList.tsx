@@ -2,8 +2,15 @@
 import InputComponent, { ListItem } from "@/components/InputComponent";
 import TodoList from "@/components/TodoList";
 import { useSessionStorage } from "@uidotdev/usehooks";
-import { useState } from "react";
 import ProjectTitle from "./ProjectTitle";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Plus } from "lucide-react";
 
 export interface Project {
   id: number;
@@ -15,62 +22,60 @@ export interface Project {
 
 export default function ProjectList() {
   const [projects, setProjects] = useSessionStorage<Project[]>("projects", []);
-  const [isAddingProject, setIsAddingProject] = useState(true);
-  const [newProjectName, setNewProjectName] = useState("");
-
-  const handleProjectNameChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setNewProjectName(event.target.value);
-  };
-
-  const handleProjectNameKeyDown = (
-    event: React.KeyboardEvent<HTMLHeadingElement>,
-  ) => {
-    if (event.key === "Enter") {
-      handleAddProject();
-    }
-  };
 
   const handleAddProject = () => {
-    if (newProjectName.trim() === "") {
-      return;
-    }
-
     const newProject: Project = {
       id: Date.now(),
-      projectName: newProjectName.trim(),
+      projectName: `${projects.length + 1}. New Project`,
       createdAt: new Date(),
       updatedAt: new Date(),
       todos: [],
     };
 
     setProjects([...projects, newProject]);
-    setIsAddingProject(false);
-    setNewProjectName("");
+    window.scrollTo(999999999, 999999999);
   };
 
   return (
-    <div className="flex w-full flex-col space-y-20">
-      <div>
-        {isAddingProject ? (
-          <input
-            className="w-full bg-transparent text-3xl first-letter:uppercase placeholder:opacity-30"
-            value={newProjectName}
-            onChange={handleProjectNameChange}
-            onKeyDown={handleProjectNameKeyDown}
-            placeholder="Add Project..."
-          />
-        ) : (
-          <h1 className="text-3xl opacity-30 first-letter:uppercase focus:opacity-100">
-            {newProjectName}
-          </h1>
-        )}
-      </div>
+    <div className="flex h-full w-full flex-col space-y-20">
+      {projects.length > 0 && (
+        <div className="z-5 fixed bottom-5 right-5">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className="">
+                <button
+                  onClick={() => handleAddProject()}
+                  className="rounded-full bg-stone-700 p-4 hover:bg-stone-800"
+                >
+                  <Plus className="size-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Create Project</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      )}
 
       {projects.map((project) => (
         <ProjectItem key={project.id} project={project} />
       ))}
+
+      {projects.length === 0 && (
+        <div className="flex h-full flex-col items-center justify-center">
+          <p className="text-center text-lg text-stone-100">
+            There is no Projects yet Lets create one
+          </p>
+
+          <button
+            onClick={() => handleAddProject()}
+            className="mt-10 rounded-full bg-stone-800/50 p-4 hover:bg-stone-800"
+          >
+            <Plus className="size-10 text-stone-100" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

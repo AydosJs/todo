@@ -20,7 +20,10 @@ import {
 export default function ProjectTitle({
   projectName,
   projectId,
-}: Readonly<{ projectName: string; projectId: number }>) {
+}: Readonly<{
+  projectName: string;
+  projectId: number;
+}>) {
   const [_, setProjects] = useSessionStorage<Project[]>("projects", []); // Access setProjects here
 
   const [isEditing, setIsEditing] = useState(false);
@@ -66,7 +69,8 @@ export default function ProjectTitle({
           value={editedName}
           onChange={handleEditChange}
           onBlur={handleEditSave}
-          onKeyDown={handleKeyDown} // Save on Enter
+          onKeyDown={handleKeyDown}
+          onFocus={(e) => e.target.select()}
         />
       ) : (
         <h1

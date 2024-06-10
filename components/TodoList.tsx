@@ -24,7 +24,7 @@ export default function TodoList({
   return (
     <>
       {unCompatedTodos.length > 0 && (
-        <div className="mt-6 flex flex-col space-y-4 text-xs">
+        <div className="mt-6 flex flex-col space-y-3 text-xs">
           <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
             <div className="flex items-center space-x-4">
               <span>ToDo</span>
