@@ -1,128 +1,151 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import TodoItem from "@/components/TodoItem";
 import { ListItem } from "./InputComponent";
 import {
   DndContext,
   DragOverEvent,
-  MouseSensor,
+  KeyboardSensor,
+  PointerSensor,
   closestCorners,
   useSensor,
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
-import { createPortal } from "react-dom";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import Container from "./Container";
 
 export default function TodoList({
   list,
   projectId,
 }: Readonly<{ list: ListItem[]; projectId: string }>) {
-  // console.log("list", list);
-  const [unCompletedTodos, setUnCompletedTodos] = useState(
-    list.filter((todo) => todo.status === "uncompleted"),
-  );
-  const [completedTodos, setCompletedTodos] = useState(
-    list.filter((todo) => todo.status === "completed"),
-  );
+  const [items, setItems] = useState({
+    completedTodos: list.filter((todo) => todo.status === "completed"),
+    unCompletedTodos: list.filter((todo) => todo.status === "uncompleted"),
+  });
 
   useEffect(() => {
-    setUnCompletedTodos(list.filter((todo) => todo.status === "uncompleted"));
-    setCompletedTodos(list.filter((todo) => todo.status === "completed"));
+    setItems({
+      completedTodos: list.filter((todo) => todo.status === "completed"),
+      unCompletedTodos: list.filter((todo) => todo.status === "uncompleted"),
+    });
   }, [list]);
-
-  const getTaskPos = (id: string, tasks: ListItem[]) =>
-    tasks.findIndex((t) => t.id === id);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    const {
-      active: { id: activeId },
-    } = event; // Get active item ID
+    if (!over) return;
+    const { id } = active;
+    const { id: overId } = over;
 
-    if (active && over && active.id === over.id) return;
-    if (over) {
-      if (
-        over.data.current?.type === "uncompleted" &&
-        active?.data.current?.type === "completed"
-      ) {
-        // Moved from "completed" to "uncompleted"
-        setCompletedTodos((tasks) => tasks.filter((t) => t.id !== activeId));
-        setUnCompletedTodos((tasks) => {
-          const newPos = getTaskPos(String(over.id), tasks);
-          const item = completedTodos.find((t) => t.id === activeId)!;
-          item.status = "uncompleted";
-          const newArr = [item, ...tasks];
+    if (!id || !overId) return;
 
-          return arrayMove(newArr, 0, newPos);
-        });
-      } else if (
-        over.data.current?.type === "completed" &&
-        active?.data.current?.type === "uncompleted"
-      ) {
-        // Moved from "uncompleted" to "completed"
-        setUnCompletedTodos((tasks) => tasks.filter((t) => t.id !== activeId));
-        setCompletedTodos((tasks) => {
-          const newPos = getTaskPos(String(over.id), tasks);
-          const item = unCompletedTodos.find((t) => t.id === activeId)!;
-          item.status = "completed";
-          const newArr = [item, ...tasks];
-          return arrayMove(newArr, 0, newPos);
-        });
+    const activeContainer =
+      active?.data.current?.type === "uncompleted"
+        ? "unCompletedTodos"
+        : "completedTodos";
+    const overContainer =
+      over?.data.current?.type !== "completed"
+        ? "unCompletedTodos"
+        : "completedTodos";
 
-        return;
-      }
+    if (activeContainer !== overContainer) {
+      return;
+    }
 
-      const isCompleted = completedTodos.some((todo) => todo.id === activeId);
-      if (isCompleted) {
-        setCompletedTodos((tasks) => {
-          const originalPos = getTaskPos(String(active.id), tasks);
-          const newPos = getTaskPos(String(over.id), tasks);
-          return arrayMove(tasks, originalPos, newPos);
-        });
-      } else {
-        setUnCompletedTodos((tasks) => {
-          const originalPos = getTaskPos(String(active.id), tasks);
-          const newPos = getTaskPos(String(over.id), tasks);
-          return arrayMove(tasks, originalPos, newPos);
-        });
-      }
+    const activeIndex = items[activeContainer].findIndex(
+      (item) => item.id === active.id,
+    );
+    const overIndex = items[overContainer].findIndex(
+      (item) => item.id === over.id,
+    );
+
+    if (activeIndex !== overIndex) {
+      setItems((items) => ({
+        ...items,
+        [overContainer]: arrayMove(
+          items[overContainer],
+          activeIndex,
+          overIndex,
+        ),
+      }));
     }
   };
 
   const sensors = useSensors(
-    useSensor(MouseSensor, {
-      onActivation: (event) => console.log("onActivation", event),
-      activationConstraint: { distance: 5 },
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
 
-  const onDragOver = (e: DragOverEvent) => {
-    const { active, over } = e;
-    if (active && over && active.id === over.id) return;
+  const handleDragOver = (event: DragOverEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+    const { id } = active;
+    const { id: overId } = over;
 
-    const isActiveTask = active.data.current?.type === over?.data.current?.type;
-    if (isActiveTask) return;
+    if (!id || !overId) return;
 
-    // if (over?.data.current?.type === "completed" && over) {
-    //   setCompletedTodos((tasks) => {
-    //     const originalPos = getTaskPos(String(active.id), tasks);
-    //     const newPos = getTaskPos(String(over.id), tasks);
-    //     return arrayMove(tasks, originalPos, newPos);
-    //   });
-    // } else if (over) {
-    //   setUnCompletedTodos((tasks) => {
-    //     const originalPos = getTaskPos(String(active.id), tasks);
-    //     const newPos = getTaskPos(String(over.id), tasks);
-    //     return arrayMove(tasks, originalPos, newPos);
-    //   });
-    // }
+    const activeContainer =
+      active?.data.current?.type === "uncompleted"
+        ? "unCompletedTodos"
+        : "completedTodos";
+    const overContainer =
+      over?.data.current?.type !== "completed"
+        ? "unCompletedTodos"
+        : "completedTodos";
+    if (
+      activeContainer === overContainer ||
+      !id ||
+      !overId ||
+      !active ||
+      !over
+    ) {
+      return;
+    }
+
+    setItems((prev) => {
+      const activeItems = prev[activeContainer];
+      const overItems = prev[overContainer];
+      const activeIndex = activeItems.findIndex((item) => item?.id === id);
+      const overIndex = overItems.findIndex((item) => item?.id === overId);
+
+      let newIndex;
+
+      if (overId in prev) {
+        newIndex = overItems.length + 1;
+      } else {
+        const draggingRect = active.rect;
+
+        if (draggingRect && draggingRect?.current?.initial?.top) {
+          const isBelowLastItem =
+            over &&
+            overIndex === overItems.length - 1 &&
+            draggingRect?.current?.initial?.top >
+              over.rect.top + over.rect.height;
+
+          const modifier = isBelowLastItem ? 1 : 0;
+          newIndex =
+            overIndex >= 0 ? overIndex + modifier : overItems.length + 1;
+        }
+      }
+
+      const movedItem = { ...items[activeContainer][activeIndex] };
+      movedItem.status =
+        overContainer === "unCompletedTodos" ? "uncompleted" : "completed";
+
+      return {
+        ...prev,
+        [activeContainer]: [
+          ...prev[activeContainer].filter((item) => item?.id !== active?.id),
+        ],
+        [overContainer]: [
+          ...prev[overContainer].slice(0, newIndex),
+          movedItem,
+          ...prev[overContainer].slice(newIndex, prev[overContainer].length),
+        ],
+      };
+    });
   };
 
   return (
@@ -131,47 +154,44 @@ export default function TodoList({
         sensors={sensors}
         collisionDetection={closestCorners}
         onDragEnd={handleDragEnd}
-        onDragOver={onDragOver}
+        onDragOver={handleDragOver}
+        // onDragOver={onDragOver}
       >
-        {unCompletedTodos.length > 0 && (
-          <div className="mt-6 flex flex-col space-y-3 text-xs">
-            <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
-              <div className="flex items-center space-x-4">
-                <span>ToDo</span>
-                <span className="text-stone-500">
-                  {unCompletedTodos.length} items
-                </span>
-              </div>
-              <span className="text-stone-500">Due</span>
+        <div className="mt-6 flex flex-col space-y-3 text-xs">
+          <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
+            <div className="flex items-center space-x-4">
+              <span>ToDo</span>
+              <span className="text-stone-500"></span>
             </div>
-
-            <SortableContext id="123" items={unCompletedTodos}>
-              {unCompletedTodos.map((todo) => (
-                <TodoItem projectId={projectId} key={todo.id} item={todo} />
-              ))}
-            </SortableContext>
+            <span className="text-stone-500">Due</span>
           </div>
-        )}
 
-        {completedTodos.length > 0 && (
-          <div className="mt-6 flex flex-col space-y-4 text-xs">
-            <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
-              <div className="flex items-center space-x-4">
-                <span>Completed</span>
-                <span className="text-stone-500">
-                  {completedTodos.length} items
-                </span>
-              </div>
-              <span className="text-stone-500">Due</span>
+          <div>
+            <Container
+              todos={items.unCompletedTodos}
+              projectId={projectId}
+              id={"unCompletedTodos"}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-col space-y-4 text-xs">
+          <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
+            <div className="flex items-center space-x-4">
+              <span>Completed</span>
+              <span className="text-stone-500">items</span>
             </div>
-
-            <SortableContext id="321" items={completedTodos}>
-              {completedTodos.map((todo) => (
-                <TodoItem projectId={projectId} key={todo.id} item={todo} />
-              ))}
-            </SortableContext>
+            <span className="text-stone-500">Due</span>
           </div>
-        )}
+
+          <div>
+            <Container
+              todos={items.completedTodos}
+              projectId={projectId}
+              id={"completedTodos"}
+            />
+          </div>
+        </div>
       </DndContext>
     </div>
   );

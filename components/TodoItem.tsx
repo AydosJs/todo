@@ -18,11 +18,11 @@ export default function TodoItem({
 }: Readonly<{ item: Readonly<ListItem>; projectId: string }>) {
   const [_, setProjects] = useSessionStorage<Project[]>("projects", []);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(item.text);
+  const [editedTitle, setEditedTitle] = useState(item?.text);
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
-      id: item.id,
+      id: item?.id,
       data: {
         type: item.status,
         item,
@@ -49,7 +49,7 @@ export default function TodoItem({
           ? {
               ...project,
               todos: project.todos.map((t) =>
-                t.id === item.id ? { ...t, text: editedTitle } : t,
+                t.id === item?.id ? { ...t, text: editedTitle } : t,
               ),
             }
           : project,
@@ -65,7 +65,7 @@ export default function TodoItem({
           ? {
               ...project,
               todos: project.todos.map((t) =>
-                t.id === item.id
+                t.id === item?.id
                   ? {
                       ...t,
                       status:
@@ -85,7 +85,7 @@ export default function TodoItem({
         project.id === projectId
           ? {
               ...project,
-              todos: project.todos.filter((t) => t.id !== item.id),
+              todos: project.todos.filter((t) => t.id !== item?.id),
             }
           : project,
       ),
