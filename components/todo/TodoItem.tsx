@@ -98,7 +98,7 @@ export default function TodoItem({
       {...attributes}
       {...listeners}
       style={style}
-      className="group relative flex flex-row items-center justify-between space-x-2"
+      className="group relative flex w-full flex-row items-center justify-between space-x-2 overflow-hidden"
     >
       <div className="flex w-full flex-row items-center space-x-3">
         <Checkbox
@@ -128,13 +128,13 @@ export default function TodoItem({
           </span>
         )}
       </div>
-      <div className="flex flex-row items-center space-x-2 divide-x">
-        <span className="text-nowrap text-stone-400">
-          {dayjs(item.createdAt).fromNow()}
-        </span>
+      <div className="w-fill relative flex flex-row items-center space-x-2 divide-x divide-stone-500">
+        <div className="text-nowrap text-stone-400 transition-all group-hover:mr-7">
+          <p>{dayjs(item.createdAt).fromNow()}</p>
+        </div>
         <button
           onClick={handleDeleteItem}
-          className="hidden pl-1 transition-all group-hover:block"
+          className="absolute right-0 translate-x-full transform pl-1 transition-transform duration-300 group-hover:translate-x-0"
         >
           <Trash2 className="size-4" />
         </button>
