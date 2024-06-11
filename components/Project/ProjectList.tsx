@@ -1,8 +1,5 @@
 "use client";
-import InputComponent, { ListItem } from "@/components/InputComponent";
-import TodoList from "@/components/TodoList";
 import { useSessionStorage } from "@uidotdev/usehooks";
-import ProjectTitle from "./ProjectTitle";
 import { v4 as uuidv4 } from "uuid";
 
 import {
@@ -13,6 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ArrowUpFromDot, Plus } from "lucide-react";
 import { ProjectItem } from "./ProjectItem";
+import { ListItem } from "../InputComponent";
 
 export interface Project {
   id: string;

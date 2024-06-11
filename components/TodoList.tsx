@@ -5,9 +5,7 @@ import { ListItem } from "./InputComponent";
 import {
   DndContext,
   DragOverEvent,
-  KeyboardSensor,
   MouseSensor,
-  PointerSensor,
   closestCorners,
   useSensor,
   useSensors,
