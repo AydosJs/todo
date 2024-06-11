@@ -7,16 +7,32 @@ import { useState } from "react";
 import { useSessionStorage } from "@uidotdev/usehooks";
 import { Project } from "./Project/ProjectList";
 import { Trash2 } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 dayjs.extend(relativeTime);
 
 export default function TodoItem({
   projectId,
   item,
-}: Readonly<{ item: Readonly<ListItem>; projectId: number }>) {
+}: Readonly<{ item: Readonly<ListItem>; projectId: string }>) {
   const [_, setProjects] = useSessionStorage<Project[]>("projects", []);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(item.text);
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: item.id,
+      data: {
+        type: item.status,
+        item,
+      },
+    });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
 
   const handleEditStart = () => {
     setIsEditing(true);
@@ -77,7 +93,13 @@ export default function TodoItem({
   };
 
   return (
-    <div className="group relative flex flex-row items-center justify-between space-x-2">
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
+      className="group relative flex flex-row items-center justify-between space-x-2"
+    >
       <div className="flex w-full flex-row items-center space-x-3">
         <Checkbox
           className="rounded-full border-2 border-white"
@@ -99,7 +121,7 @@ export default function TodoItem({
           />
         ) : (
           <span
-            className="text-sm first-letter:uppercase"
+            className={`w-full text-sm first-letter:uppercase ${item.status === "completed" ? "line-through" : ""}`}
             onClick={handleEditStart}
           >
             {item.text}

@@ -22,7 +22,7 @@ export default function ProjectTitle({
   projectId,
 }: Readonly<{
   projectName: string;
-  projectId: number;
+  projectId: string;
 }>) {
   const [_, setProjects] = useSessionStorage<Project[]>("projects", []); // Access setProjects here
 

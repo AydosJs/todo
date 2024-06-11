@@ -3,6 +3,7 @@ import InputComponent, { ListItem } from "@/components/InputComponent";
 import TodoList from "@/components/TodoList";
 import { useSessionStorage } from "@uidotdev/usehooks";
 import ProjectTitle from "./ProjectTitle";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   Tooltip,
@@ -13,7 +14,7 @@ import {
 import { Plus } from "lucide-react";
 
 export interface Project {
-  id: number;
+  id: string;
   projectName: string;
   createdAt: Date;
   updatedAt: Date;
@@ -25,7 +26,7 @@ export default function ProjectList() {
 
   const handleAddProject = () => {
     const newProject: Project = {
-      id: Date.now(),
+      id: uuidv4(),
       projectName: `${projects.length + 1}. New Project`,
       createdAt: new Date(),
       updatedAt: new Date(),

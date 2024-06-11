@@ -4,9 +4,10 @@ import { useSessionStorage } from "@uidotdev/usehooks";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Project } from "./Project/ProjectList";
+import { v4 as uuidv4 } from "uuid";
 
 export interface ListItem {
-  id: number;
+  id: string;
   text: string;
   status: "completed" | "uncompleted";
   createdAt: Date;
@@ -15,7 +16,7 @@ export interface ListItem {
 
 export default function InputComponent({
   projectId,
-}: Readonly<{ projectId: number }>) {
+}: Readonly<{ projectId: string }>) {
   const [_, setProjects] = useSessionStorage<Project[]>("projects", []); // Access setProjects here
   const [inputValue, setInputValue] = useState("");
 
@@ -29,7 +30,7 @@ export default function InputComponent({
     }
 
     const newTodo: ListItem = {
-      id: Date.now(),
+      id: uuidv4(),
       text: inputValue.trim(),
       status: "uncompleted",
       createdAt: new Date(),
