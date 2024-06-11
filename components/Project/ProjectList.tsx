@@ -43,7 +43,7 @@ export default function ProjectList() {
         <div className="z-5 fixed bottom-5 right-5">
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger className="">
+              <TooltipTrigger asChild className="">
                 <button
                   onClick={() => handleAddProject()}
                   className="rounded-full bg-stone-700 p-4 hover:bg-stone-800"

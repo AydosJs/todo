@@ -29,11 +29,11 @@ export default function Container({
     >
       <div ref={setNodeRef}>
         {todos.map((todo) => (
-          <>
+          <div key={todo.id}>
             {todo?.id && (
-              <TodoItem projectId={projectId} key={todo?.id} item={todo} />
+              <TodoItem projectId={projectId} key={todo.id} item={todo} />
             )}
-          </>
+          </div>
         ))}
       </div>
     </SortableContext>

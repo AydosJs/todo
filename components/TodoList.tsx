@@ -6,6 +6,7 @@ import {
   DndContext,
   DragOverEvent,
   KeyboardSensor,
+  MouseSensor,
   PointerSensor,
   closestCorners,
   useSensor,
@@ -71,10 +72,17 @@ export default function TodoList({
     }
   };
 
+  // const sensors = useSensors(
+  //   useSensor(PointerSensor),
+  //   useSensor(KeyboardSensor, {
+  //     coordinateGetter: sortableKeyboardCoordinates,
+  //   }),
+  // );
+
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+    useSensor(MouseSensor, {
+      onActivation: (event) => console.log("onActivation", event),
+      activationConstraint: { distance: 5 },
     }),
   );
 
