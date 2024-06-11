@@ -22,7 +22,7 @@ export default function TodoList({
   list,
   projectId,
 }: Readonly<{ list: ListItem[]; projectId: string }>) {
-  const [projects, setProjects] = useSessionStorage<Project[]>("projects", []);
+  const [_, setProjects] = useSessionStorage<Project[]>("projects", []);
 
   const [items, setItems] = useState({
     completedTodos: list.filter((todo) => todo.status === "completed"),
@@ -77,10 +77,6 @@ export default function TodoList({
   };
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
     useSensor(MouseSensor, {
       // onActivation: (event) => console.log("onActivation", event),
       activationConstraint: { distance: 5 },
@@ -171,7 +167,8 @@ export default function TodoList({
           : project,
       );
     });
-  }, [items["completedTodos"], items["unCompletedTodos"]]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items]);
 
   return (
     <div>
@@ -182,41 +179,51 @@ export default function TodoList({
         onDragOver={handleDragOver}
         // onDragOver={onDragOver}
       >
-        <div className="mt-6 flex flex-col space-y-3 text-xs">
-          <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
-            <div className="flex items-center space-x-4">
-              <span>ToDo</span>
-              <span className="text-stone-500"></span>
+        {items["unCompletedTodos"].length > 0 && (
+          <div className="mt-6 flex flex-col space-y-3 text-xs">
+            <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
+              <div className="flex items-center space-x-4">
+                <span>ToDo</span>
+                <span className="text-stone-500">
+                  {items["unCompletedTodos"].length}{" "}
+                  {items["unCompletedTodos"].length === 1 ? "item" : "items"}
+                </span>
+              </div>
+              <span className="text-stone-500">Due</span>
             </div>
-            <span className="text-stone-500">Due</span>
-          </div>
 
-          <div>
-            <Container
-              todos={items.unCompletedTodos}
-              projectId={projectId}
-              id={"unCompletedTodos"}
-            />
-          </div>
-        </div>
-
-        <div className="mt-6 flex flex-col space-y-4 text-xs">
-          <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
-            <div className="flex items-center space-x-4">
-              <span>Completed</span>
-              <span className="text-stone-500">items</span>
+            <div>
+              <Container
+                todos={items.unCompletedTodos}
+                projectId={projectId}
+                id={"unCompletedTodos"}
+              />
             </div>
-            <span className="text-stone-500">Due</span>
           </div>
+        )}
 
-          <div>
-            <Container
-              todos={items.completedTodos}
-              projectId={projectId}
-              id={"completedTodos"}
-            />
+        {items["completedTodos"].length > 0 && (
+          <div className="mt-6 flex flex-col space-y-4 text-xs">
+            <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
+              <div className="flex items-center space-x-4">
+                <span>Completed</span>
+                <span className="text-stone-500">
+                  {items["completedTodos"].length}{" "}
+                  {items["unCompletedTodos"].length === 1 ? "item" : "items"}
+                </span>
+              </div>
+              <span className="text-stone-500">Due</span>
+            </div>
+
+            <div>
+              <Container
+                todos={items.completedTodos}
+                projectId={projectId}
+                id={"completedTodos"}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </DndContext>
     </div>
   );

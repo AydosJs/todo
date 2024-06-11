@@ -27,7 +27,7 @@ export default function Container({
       items={todos}
       strategy={verticalListSortingStrategy}
     >
-      <div ref={setNodeRef}>
+      <div ref={setNodeRef} className="flex flex-col space-y-2">
         {todos.map((todo) => (
           <TodoItem projectId={projectId} key={todo.id} item={todo} />
         ))}

@@ -11,7 +11,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Plus } from "lucide-react";
+import { ArrowUpFromDot, Plus } from "lucide-react";
+import { ProjectItem } from "./ProjectItem";
 
 export interface Project {
   id: string;
@@ -64,32 +65,25 @@ export default function ProjectList() {
       ))}
 
       {projects.length === 0 && (
-        <div className="flex h-full flex-col items-center justify-center">
-          <p className="text-center text-lg text-stone-100">
-            There is no Projects yet Lets create one
-          </p>
-
+        <div className="t absolute left-1/2 top-1/3 flex h-full -translate-x-1/2 -translate-y-1/2 transform flex-col items-center justify-center">
           <button
             onClick={() => handleAddProject()}
-            className="mt-10 rounded-full bg-stone-800/50 p-4 hover:bg-stone-800"
+            className="group relative mb-10 mt-20 inline-flex items-center justify-center overflow-hidden rounded-full border-2 border-stone-700/20 bg-stone-800/50 p-4 font-medium text-neutral-50"
           >
-            <Plus className="size-10 text-stone-100" />
+            <span className="absolute h-0 w-0 rounded-full bg-stone-50 transition-all duration-300 group-hover:h-56 group-hover:w-32"></span>
+            <span className="relative">
+              <Plus className="size-10 text-stone-50 transition-all group-hover:text-stone-800" />
+            </span>
           </button>
+
+          <span className="mb-10">
+            <ArrowUpFromDot className="size-7 animate-bounce" />
+          </span>
+
+          <p className="text-center text-lg font-normal text-stone-50">
+            There is no Projects yet:( Lets create one ✨
+          </p>
         </div>
-      )}
-    </div>
-  );
-}
-
-export function ProjectItem({ project }: Readonly<{ project: Project }>) {
-  return (
-    <div className="flex w-full flex-col">
-      <ProjectTitle projectId={project.id} projectName={project.projectName} />
-
-      <InputComponent projectId={project.id} />
-
-      {project.todos.length > 0 && (
-        <TodoList projectId={project.id} list={project.todos} />
       )}
     </div>
   );

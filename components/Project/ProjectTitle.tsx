@@ -82,7 +82,7 @@ export default function ProjectTitle({
       )}
 
       <AlertDialog>
-        <AlertDialogTrigger className="rounded-md bg-stone-800/50 p-2 opacity-0 transition-all group-hover:opacity-100">
+        <AlertDialogTrigger className="rounded-md opacity-0 transition-all hover:!opacity-100 group-hover/project:opacity-50">
           <Trash2 className="size-4" />
         </AlertDialogTrigger>
         <AlertDialogContent className="border-stone-900 bg-stone-950 text-white">
