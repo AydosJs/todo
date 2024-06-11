@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ListItem } from "./InputComponent";
+import { ListItem } from "../InputComponent";
 import {
   DndContext,
   DragOverEvent,
@@ -12,9 +12,9 @@ import {
   type DragEndEvent,
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import Container from "./Container";
 import { useSessionStorage } from "@uidotdev/usehooks";
-import { Project } from "./Project/ProjectList";
+import { Project } from "../Project/ProjectList";
+import ToDoContainer from "./ToDoContainer";
 
 export default function TodoList({
   list,
@@ -191,7 +191,7 @@ export default function TodoList({
             </div>
 
             <div>
-              <Container
+              <ToDoContainer
                 todos={items.unCompletedTodos}
                 projectId={projectId}
                 id={"unCompletedTodos"}
@@ -214,7 +214,7 @@ export default function TodoList({
             </div>
 
             <div>
-              <Container
+              <ToDoContainer
                 todos={items.completedTodos}
                 projectId={projectId}
                 id={"completedTodos"}

@@ -4,11 +4,11 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { ListItem } from "./InputComponent";
+import { ListItem } from "../InputComponent";
 import TodoItem from "./TodoItem";
 import { useDroppable } from "@dnd-kit/core";
 
-export default function Container({
+export default function ToDoContainer({
   todos,
   projectId,
   id,

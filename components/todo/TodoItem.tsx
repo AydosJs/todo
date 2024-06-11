@@ -1,11 +1,11 @@
 "use client";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ListItem } from "./InputComponent";
+import { ListItem } from "../InputComponent";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useState } from "react";
 import { useSessionStorage } from "@uidotdev/usehooks";
-import { Project } from "./Project/ProjectList";
+import { Project } from "../Project/ProjectList";
 import { Trash2 } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
