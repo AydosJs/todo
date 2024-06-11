@@ -15,11 +15,15 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import Container from "./Container";
+import { useSessionStorage } from "@uidotdev/usehooks";
+import { Project } from "./Project/ProjectList";
 
 export default function TodoList({
   list,
   projectId,
 }: Readonly<{ list: ListItem[]; projectId: string }>) {
+  const [projects, setProjects] = useSessionStorage<Project[]>("projects", []);
+
   const [items, setItems] = useState({
     completedTodos: list.filter((todo) => todo.status === "completed"),
     unCompletedTodos: list.filter((todo) => todo.status === "uncompleted"),
@@ -72,16 +76,13 @@ export default function TodoList({
     }
   };
 
-  // const sensors = useSensors(
-  //   useSensor(PointerSensor),
-  //   useSensor(KeyboardSensor, {
-  //     coordinateGetter: sortableKeyboardCoordinates,
-  //   }),
-  // );
-
   const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
     useSensor(MouseSensor, {
-      onActivation: (event) => console.log("onActivation", event),
+      // onActivation: (event) => console.log("onActivation", event),
       activationConstraint: { distance: 5 },
     }),
   );
@@ -155,6 +156,22 @@ export default function TodoList({
       };
     });
   };
+
+  useEffect(() => {
+    setProjects((prevProjects) => {
+      return prevProjects.map((project) =>
+        project.id === projectId
+          ? {
+              ...project,
+              todos: [
+                items["unCompletedTodos"],
+                items["completedTodos"],
+              ].flat(),
+            }
+          : project,
+      );
+    });
+  }, [items["completedTodos"], items["unCompletedTodos"]]);
 
   return (
     <div>
