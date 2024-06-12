@@ -16,12 +16,17 @@ import { useSessionStorage } from "@uidotdev/usehooks";
 import { Project } from "../Project/ProjectList";
 import ToDoContainer from "./ToDoContainer";
 
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
 export default function TodoList({
   list,
   projectId,
 }: Readonly<{ list: ListItem[]; projectId: string }>) {
   const [_, setProjects] = useSessionStorage<Project[]>("projects", []);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterOption, setFilterOption] = useState<
+    "all" | "todo" | "completed"
+  >("all");
 
   const [items, setItems] = useState({
     completedTodos: list.filter((todo) => todo.status === "completed"),
@@ -178,10 +183,42 @@ export default function TodoList({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
+  const displayedUncompletedTodos =
+    filterOption === "all" || filterOption === "todo"
+      ? filteredUncompletedTodos
+      : [];
+  const displayedCompletedTodos =
+    filterOption === "all" || filterOption === "completed"
+      ? filteredCompletedTodos
+      : [];
+
   return (
     <div>
       <div className="my-4 flex flex-row items-center justify-between">
-        <div>1</div>
+        <ToggleGroup defaultValue="all" type="single" className="">
+          <ToggleGroupItem
+            className={`${filterOption === "all" ? "!bg-stone-800/50 !text-white" : "bg-none opacity-30"} h-auto p-2 px-3 text-xs hover:bg-stone-800/50 hover:text-white hover:opacity-100`}
+            onClick={() => setFilterOption("all")}
+            value="all"
+          >
+            All
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            className={`${filterOption === "todo" ? "!bg-stone-800/50 !text-white" : "bg-none opacity-30"} h-auto p-2 px-3 text-xs hover:bg-stone-800/50 hover:text-white hover:opacity-100`}
+            onClick={() => setFilterOption("todo")}
+            value="ToDo"
+          >
+            ToDo
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            className={`${filterOption === "completed" ? "!bg-stone-800/50 !text-white" : "bg-none opacity-30"} h-auto p-2 px-3 text-xs hover:bg-stone-800/50 hover:text-white hover:opacity-100`}
+            onClick={() => setFilterOption("completed")}
+            value="Completed"
+          >
+            Completed
+          </ToggleGroupItem>
+        </ToggleGroup>
+
         <div>
           <input
             type="text"
@@ -200,14 +237,14 @@ export default function TodoList({
         onDragOver={handleDragOver}
         // onDragOver={onDragOver}
       >
-        {filteredUncompletedTodos.length > 0 && (
+        {displayedUncompletedTodos.length > 0 && (
           <div className="flex flex-col space-y-3 text-xs">
             <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
               <div className="flex items-center space-x-4">
                 <span>ToDo</span>
                 <span className="text-stone-500">
-                  {filteredUncompletedTodos.length}{" "}
-                  {filteredUncompletedTodos.length === 1 ? "item" : "items"}
+                  {displayedUncompletedTodos.length}{" "}
+                  {displayedUncompletedTodos.length === 1 ? "item" : "items"}
                 </span>
               </div>
               <span className="text-stone-500">Due</span>
@@ -215,7 +252,7 @@ export default function TodoList({
 
             <div>
               <ToDoContainer
-                todos={filteredUncompletedTodos}
+                todos={displayedUncompletedTodos}
                 projectId={projectId}
                 id={"unCompletedTodos"}
               />
@@ -223,14 +260,14 @@ export default function TodoList({
           </div>
         )}
 
-        {filteredCompletedTodos.length > 0 && (
+        {displayedCompletedTodos.length > 0 && (
           <div className="mt-6 flex flex-col space-y-4 text-xs">
             <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
               <div className="flex items-center space-x-4">
                 <span>Completed</span>
                 <span className="text-stone-500">
-                  {filteredCompletedTodos.length}{" "}
-                  {filteredCompletedTodos.length === 1 ? "item" : "items"}
+                  {displayedCompletedTodos.length}{" "}
+                  {displayedCompletedTodos.length === 1 ? "item" : "items"}
                 </span>
               </div>
               <span className="text-stone-500">Due</span>
@@ -238,7 +275,7 @@ export default function TodoList({
 
             <div>
               <ToDoContainer
-                todos={filteredCompletedTodos}
+                todos={displayedCompletedTodos}
                 projectId={projectId}
                 id={"completedTodos"}
               />
