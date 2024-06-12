@@ -43,12 +43,14 @@ export default function TodoList({
     todo.text.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  useEffect(() => {
-    setItems({
-      completedTodos: list.filter((todo) => todo.status === "completed"),
-      unCompletedTodos: list.filter((todo) => todo.status === "uncompleted"),
-    });
-  }, [list]);
+  const displayedUncompletedTodos =
+    filterOption === "all" || filterOption === "todo"
+      ? filteredUncompletedTodos
+      : [];
+  const displayedCompletedTodos =
+    filterOption === "all" || filterOption === "completed"
+      ? filteredCompletedTodos
+      : [];
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -89,13 +91,6 @@ export default function TodoList({
       }));
     }
   };
-
-  const sensors = useSensors(
-    useSensor(MouseSensor, {
-      // onActivation: (event) => console.log("onActivation", event),
-      activationConstraint: { distance: 5 },
-    }),
-  );
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
@@ -168,6 +163,13 @@ export default function TodoList({
   };
 
   useEffect(() => {
+    setItems({
+      completedTodos: list.filter((todo) => todo.status === "completed"),
+      unCompletedTodos: list.filter((todo) => todo.status === "uncompleted"),
+    });
+  }, [list]);
+
+  useEffect(() => {
     setProjects((prevProjects) => {
       return prevProjects.map((project) =>
         project.id === projectId
@@ -184,14 +186,11 @@ export default function TodoList({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
-  const displayedUncompletedTodos =
-    filterOption === "all" || filterOption === "todo"
-      ? filteredUncompletedTodos
-      : [];
-  const displayedCompletedTodos =
-    filterOption === "all" || filterOption === "completed"
-      ? filteredCompletedTodos
-      : [];
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: { distance: 5 },
+    }),
+  );
 
   return (
     <div>
@@ -201,7 +200,6 @@ export default function TodoList({
         collisionDetection={closestCorners}
         onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
-        // onDragOver={onDragOver}
       >
         {displayedUncompletedTodos.length > 0 && (
           <div className="flex flex-col space-y-3 text-xs">
