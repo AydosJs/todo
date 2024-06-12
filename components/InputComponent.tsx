@@ -17,7 +17,7 @@ export interface ListItem {
 export default function InputComponent({
   projectId,
 }: Readonly<{ projectId: string }>) {
-  const [_, setProjects] = useSessionStorage<Project[]>("projects", []); // Access setProjects here
+  const [_, setProjects] = useSessionStorage<Project[]>("projects", []);
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
