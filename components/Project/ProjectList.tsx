@@ -11,6 +11,7 @@ import {
 import { ArrowUpFromDot, Plus } from "lucide-react";
 import { ProjectItem } from "./ProjectItem";
 import { ListItem } from "../InputComponent";
+import Link from "next/link";
 
 export interface Project {
   id: string;
@@ -43,12 +44,11 @@ export default function ProjectList() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild className="">
-                <button
-                  onClick={() => handleAddProject()}
-                  className="rounded-full bg-stone-700 p-4 hover:bg-stone-800"
-                >
-                  <Plus className="size-5" />
-                </button>
+                <Link target="_blank" href="/">
+                  <button className="rounded-full bg-stone-700 p-4 hover:bg-stone-800">
+                    <Plus className="size-5" />
+                  </button>
+                </Link>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Create Project</p>
