@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-const ProjectList = dynamic(() => import("@/components/project/ProjectList"), {
+const ProjectList = dynamic(() => import("../components/project/ProjectList"), {
   ssr: false,
 });
 
