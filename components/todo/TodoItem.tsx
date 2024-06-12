@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useState } from "react";
 import { useSessionStorage } from "@uidotdev/usehooks";
-import { Project } from "../project/ProjectList";
+import { Project } from "../Project/ProjectList";
 import { Trash2 } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";

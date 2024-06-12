@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { useSessionStorage } from "@uidotdev/usehooks";
 import { Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Project } from "./project/ProjectList";
+import { Project } from "./Project/ProjectList";
 import { v4 as uuidv4 } from "uuid";
 import UploadFile from "./UploadFile";
 

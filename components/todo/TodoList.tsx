@@ -13,7 +13,7 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useSessionStorage } from "@uidotdev/usehooks";
-import { Project } from "../project/ProjectList";
+import { Project } from "../Project/ProjectList";
 import ToDoContainer from "./ToDoContainer";
 import Filter from "./Filter";
 

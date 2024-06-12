@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Project } from "./ProjectList";
+import { Project } from "@/components/Project/ProjectList";
 
 export default function ProjectTitle({
   projectName,

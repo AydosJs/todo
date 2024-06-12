@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useSessionStorage } from "@uidotdev/usehooks";
-import { Project } from "./project/ProjectList";
+import { Project } from "./Project/ProjectList";
 import { useState } from "react";
 
 export default function CreateProject() {

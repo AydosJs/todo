@@ -2,8 +2,8 @@
 
 import InputComponent from "../InputComponent";
 import TodoList from "../todo/TodoList";
-import { Project } from "./ProjectList";
-import ProjectTitle from "./ProjectTitle";
+import { Project } from "@/components/Project/ProjectList";
+import ProjectTitle from "@/components/Project/ProjectTitle";
 
 export function ProjectItem({ project }: Readonly<{ project: Project }>) {
   return (

@@ -2,7 +2,7 @@
 import { useSessionStorage } from "@uidotdev/usehooks";
 import { ArrowUpFromDot, Plus } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-import { Project } from "./project/ProjectList";
+import { Project } from "./Project/ProjectList";
 
 export default function NoProject() {
   const [projects, setProjects] = useSessionStorage<Project[]>("projects", []);

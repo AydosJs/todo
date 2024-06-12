@@ -1,10 +1,10 @@
 "use client";
 import { useSessionStorage } from "@uidotdev/usehooks";
 
-import { ProjectItem } from "./ProjectItem";
 import { ListItem } from "../InputComponent";
 import NoProject from "../NoProject";
 import CreateProject from "../CreateProject";
+import { ProjectItem } from "@/components/Project/ProjectItem";
 
 export interface Project {
   id: string;
