@@ -11,7 +11,7 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
-import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { arrayMove } from "@dnd-kit/sortable";
 import { useSessionStorage } from "@uidotdev/usehooks";
 import { Project } from "../Project/ProjectList";
 import ToDoContainer from "./ToDoContainer";
@@ -21,11 +21,21 @@ export default function TodoList({
   projectId,
 }: Readonly<{ list: ListItem[]; projectId: string }>) {
   const [_, setProjects] = useSessionStorage<Project[]>("projects", []);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [items, setItems] = useState({
     completedTodos: list.filter((todo) => todo.status === "completed"),
     unCompletedTodos: list.filter((todo) => todo.status === "uncompleted"),
   });
+
+  const filteredUncompletedTodos = items.unCompletedTodos.filter(
+    (todo: ListItem) =>
+      todo.text.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const filteredCompletedTodos = items.completedTodos.filter((todo: ListItem) =>
+    todo.text.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   useEffect(() => {
     setItems({
@@ -170,6 +180,19 @@ export default function TodoList({
 
   return (
     <div>
+      <div className="my-4 flex flex-row items-center justify-between">
+        <div>1</div>
+        <div>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search tasks..."
+            className="rounded border border-stone-800 bg-[#131313] p-2 text-xs font-normal text-white placeholder:text-xs placeholder:font-normal placeholder:text-white/30"
+          />
+        </div>
+      </div>
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
@@ -177,14 +200,14 @@ export default function TodoList({
         onDragOver={handleDragOver}
         // onDragOver={onDragOver}
       >
-        {items["unCompletedTodos"].length > 0 && (
-          <div className="mt-6 flex flex-col space-y-3 text-xs">
+        {filteredUncompletedTodos.length > 0 && (
+          <div className="flex flex-col space-y-3 text-xs">
             <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
               <div className="flex items-center space-x-4">
                 <span>ToDo</span>
                 <span className="text-stone-500">
-                  {items["unCompletedTodos"].length}{" "}
-                  {items["unCompletedTodos"].length === 1 ? "item" : "items"}
+                  {filteredUncompletedTodos.length}{" "}
+                  {filteredUncompletedTodos.length === 1 ? "item" : "items"}
                 </span>
               </div>
               <span className="text-stone-500">Due</span>
@@ -192,7 +215,7 @@ export default function TodoList({
 
             <div>
               <ToDoContainer
-                todos={items.unCompletedTodos}
+                todos={filteredUncompletedTodos}
                 projectId={projectId}
                 id={"unCompletedTodos"}
               />
@@ -200,14 +223,14 @@ export default function TodoList({
           </div>
         )}
 
-        {items["completedTodos"].length > 0 && (
+        {filteredCompletedTodos.length > 0 && (
           <div className="mt-6 flex flex-col space-y-4 text-xs">
             <div className="flex flex-row items-center justify-between border-b border-stone-800 py-2">
               <div className="flex items-center space-x-4">
                 <span>Completed</span>
                 <span className="text-stone-500">
-                  {items["completedTodos"].length}{" "}
-                  {items["unCompletedTodos"].length === 1 ? "item" : "items"}
+                  {filteredCompletedTodos.length}{" "}
+                  {filteredCompletedTodos.length === 1 ? "item" : "items"}
                 </span>
               </div>
               <span className="text-stone-500">Due</span>
@@ -215,7 +238,7 @@ export default function TodoList({
 
             <div>
               <ToDoContainer
-                todos={items.completedTodos}
+                todos={filteredCompletedTodos}
                 projectId={projectId}
                 id={"completedTodos"}
               />
