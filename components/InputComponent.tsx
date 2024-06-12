@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Project } from "./Project/ProjectList";
 import { v4 as uuidv4 } from "uuid";
+import UploadFile from "./UploadFile";
 
 export interface ListItem {
   id: string;
@@ -70,29 +71,35 @@ export default function InputComponent({
   }, []);
 
   return (
-    <div className="relative w-full">
-      <Plus
-        className="absolute left-3 top-1/2 z-10 size-4 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-stone-50"
-        onClick={handleAddTodo}
-      />
-      <Input
-        ref={inputRef}
-        className="h-auto w-full border-stone-800 bg-[#131313] p-3.5 pl-10 text-xs text-white"
-        type="text"
-        placeholder="Add ToDo"
-        value={inputValue}
-        onChange={handleInputChange}
-        onKeyDown={handleKeyDown}
-      />
+    <div className="flex flex-row items-center space-x-2">
+      <div className="relative w-full">
+        <Plus
+          className="absolute left-3 top-1/2 z-10 size-4 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-stone-50"
+          onClick={handleAddTodo}
+        />
+        <Input
+          ref={inputRef}
+          className="h-auto w-full border-stone-800 bg-[#131313] p-3.5 pl-10 text-xs text-white"
+          type="text"
+          placeholder="Add ToDo"
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+        />
 
-      <p className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center space-x-1 text-sm">
-        <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded bg-stone-900 px-1.5 font-mono font-medium text-white/50 opacity-100">
-          <span className="text-[8px] text-xs">⌘</span>
-        </kbd>
-        <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded bg-stone-900 px-1.5 font-mono font-medium text-white/50 opacity-100">
-          <span className="text-xs">F</span>
-        </kbd>
-      </p>
+        <p className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center space-x-1 text-sm">
+          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded bg-stone-900 px-1.5 font-mono font-medium text-white/50 opacity-100">
+            <span className="text-[8px] text-xs">⌘</span>
+          </kbd>
+          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded bg-stone-900 px-1.5 font-mono font-medium text-white/50 opacity-100">
+            <span className="text-xs">F</span>
+          </kbd>
+        </p>
+      </div>
+
+      <div>
+        <UploadFile />
+      </div>
     </div>
   );
 }
