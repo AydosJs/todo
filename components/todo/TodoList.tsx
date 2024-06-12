@@ -15,18 +15,19 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { useSessionStorage } from "@uidotdev/usehooks";
 import { Project } from "../Project/ProjectList";
 import ToDoContainer from "./ToDoContainer";
-
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import Filter from "./Filter";
 
 export default function TodoList({
   list,
   projectId,
 }: Readonly<{ list: ListItem[]; projectId: string }>) {
   const [_, setProjects] = useSessionStorage<Project[]>("projects", []);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterOption, setFilterOption] = useState<
-    "all" | "todo" | "completed"
-  >("all");
+  const [searchTerm] = useSessionStorage<string>("searchTerm", "");
+
+  const [filterOption] = useSessionStorage<"all" | "todo" | "completed">(
+    "filterOption",
+    "all",
+  );
 
   const [items, setItems] = useState({
     completedTodos: list.filter((todo) => todo.status === "completed"),
@@ -194,42 +195,7 @@ export default function TodoList({
 
   return (
     <div>
-      <div className="my-4 flex flex-row items-center justify-between">
-        <ToggleGroup defaultValue="all" type="single" className="">
-          <ToggleGroupItem
-            className={`${filterOption === "all" ? "!bg-stone-800/50 !text-white" : "bg-none opacity-30"} h-auto p-2 px-3 text-xs hover:bg-stone-800/50 hover:text-white hover:opacity-100`}
-            onClick={() => setFilterOption("all")}
-            value="all"
-          >
-            All
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            className={`${filterOption === "todo" ? "!bg-stone-800/50 !text-white" : "bg-none opacity-30"} h-auto p-2 px-3 text-xs hover:bg-stone-800/50 hover:text-white hover:opacity-100`}
-            onClick={() => setFilterOption("todo")}
-            value="ToDo"
-          >
-            ToDo
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            className={`${filterOption === "completed" ? "!bg-stone-800/50 !text-white" : "bg-none opacity-30"} h-auto p-2 px-3 text-xs hover:bg-stone-800/50 hover:text-white hover:opacity-100`}
-            onClick={() => setFilterOption("completed")}
-            value="Completed"
-          >
-            Completed
-          </ToggleGroupItem>
-        </ToggleGroup>
-
-        <div>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search tasks..."
-            className="rounded border border-stone-800 bg-[#131313] p-2 text-xs font-normal text-white placeholder:text-xs placeholder:font-normal placeholder:text-white/30"
-          />
-        </div>
-      </div>
-
+      <Filter />
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}
