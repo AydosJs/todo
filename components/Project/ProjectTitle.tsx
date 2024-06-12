@@ -1,7 +1,7 @@
 "use client";
 
 import { useSessionStorage } from "@uidotdev/usehooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Project } from "./ProjectList";
 import { Trash2 } from "lucide-react";
 
@@ -24,7 +24,7 @@ export default function ProjectTitle({
   projectName: string;
   projectId: string;
 }>) {
-  const [_, setProjects] = useSessionStorage<Project[]>("projects", []); // Access setProjects here
+  const [projects, setProjects] = useSessionStorage<Project[]>("projects", []); // Access setProjects here
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(projectName);
@@ -59,6 +59,12 @@ export default function ProjectTitle({
       prevProjects.filter((project) => project.id !== projectId),
     );
   };
+
+  useEffect(() => {
+    if (projects && projects.length > 0) {
+      document.title = projects[0].projectName || "Create Next App";
+    }
+  }, [projects]);
 
   return (
     <div className="group mb-6 flex flex-row items-center justify-between space-x-2">
