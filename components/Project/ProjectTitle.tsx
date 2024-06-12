@@ -2,7 +2,6 @@
 
 import { useSessionStorage } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
-import { Project } from "./ProjectList";
 import { Trash2 } from "lucide-react";
 
 import {
@@ -16,6 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Project } from "./ProjectList";
 
 export default function ProjectTitle({
   projectName,
@@ -80,7 +80,7 @@ export default function ProjectTitle({
         />
       ) : (
         <h1
-          className="text-3xl first-letter:uppercase"
+          className={`text-3xl first-letter:uppercase ${projectName === "Untitled" ? "opacity-20" : ""}`}
           onClick={handleEditStart}
         >
           {projectName}

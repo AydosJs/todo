@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Paperclip } from "lucide-react";
-import { Project } from "./Project/ProjectList";
+import { Project } from "./project/ProjectList";
 import { useSessionStorage } from "@uidotdev/usehooks";
 
 import {

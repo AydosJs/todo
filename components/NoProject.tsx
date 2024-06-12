@@ -2,7 +2,7 @@
 import { useSessionStorage } from "@uidotdev/usehooks";
 import { ArrowUpFromDot, Plus } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-import { Project } from "./Project/ProjectList";
+import { Project } from "./project/ProjectList";
 
 export default function NoProject() {
   const [projects, setProjects] = useSessionStorage<Project[]>("projects", []);
@@ -10,7 +10,7 @@ export default function NoProject() {
   const handleAddProject = () => {
     const newProject: Project = {
       id: uuidv4(),
-      projectName: `${projects.length + 1}. New Project`,
+      projectName: `Untitled`,
       createdAt: new Date(),
       updatedAt: new Date(),
       todos: [],
